@@ -23,6 +23,14 @@
     "box": "Box",
     "points": "Pontos",
     "noAthletesFound": "Nenhum atleta encontrado.",
-    "wipPanel": "Em breve: um painel para selecionar o atleta e inserir a pontuação das provas."
+    "enterResults": "Lançar Resultados",
+    "selectAthlete": "Selecione um atleta",
+    "fetchAthletesFailed": "Falha ao carregar atletas.",
+    "selectAthleteError": "Por favor, selecione um atleta.",
+    "scoreUpdated": "Resultado salvo com sucesso!",
+    "scoreUpdateFailed": "Falha ao salvar o resultado.",
+    "time": "Tempo",
+    "timeFormat": "ex: 12:45",
+    "saveResult": "Salvar Resultado"
   }
 }

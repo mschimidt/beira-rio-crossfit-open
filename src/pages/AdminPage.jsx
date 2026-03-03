@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import AthleteForm from '../components/forms/AthleteForm';
+import ScoreForm from '../components/forms/ScoreForm';
 
 const AdminPage = () => {
   const { t } = useTranslation();
@@ -38,15 +39,7 @@ const AdminPage = () => {
         </section>
 
         <section>
-          {/* A seção de lançamento de provas será adicionada aqui */}
-          <div className="p-6 bg-gray-800/50 rounded-lg h-full">
-            <h3 className="text-lg font-semibold text-neon-green mb-4">
-              Lançamento de Provas
-            </h3>
-            <p className="text-gray-400">
-              {t('wipPanel')}
-            </p>
-          </div>
+          <ScoreForm />
         </section>
       </div>
     </div>

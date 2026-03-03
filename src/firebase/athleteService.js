@@ -1,5 +1,5 @@
 import { db } from './config';
-import { collection, getDocs, query, orderBy, addDoc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, addDoc, doc, updateDoc } from 'firebase/firestore';
 
 // Mock data to be used until Firebase is configured by the user
 const mockAthletes = [
@@ -70,9 +70,32 @@ export const addAthlete = async (athleteData) => {
     await addDoc(athletesCollection, {
       ...athleteData,
       score: 0, // Initialize score to 0
+      time: '', // Initialize time
     });
   } catch (error) {
     console.error("Error adding athlete: ", error);
     throw new Error("Não foi possível adicionar o atleta.");
+  }
+};
+
+/**
+ * Updates the score and time for a specific athlete.
+ * @param {string} athleteId - The ID of the athlete to update.
+ * @param {Object} performanceData - An object containing the new score and time.
+ * @returns {Promise} A promise that resolves when the update is complete.
+ */
+export const updateAthletePerformance = async (athleteId, performanceData) => {
+  if (db.app.options.apiKey === 'YOUR_API_KEY') {
+    console.warn('Firebase is not configured. Simulating performance update.');
+    console.log(`Updating athlete ${athleteId} with:`, performanceData);
+    return Promise.resolve();
+  }
+
+  try {
+    const athleteRef = doc(db, 'athletes', athleteId);
+    await updateDoc(athleteRef, performanceData);
+  } catch (error) {
+    console.error("Error updating athlete performance: ", error);
+    throw new Error("Não foi possível atualizar o resultado do atleta.");
   }
 };

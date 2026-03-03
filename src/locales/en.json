@@ -23,6 +23,14 @@
     "box": "Box",
     "points": "Points",
     "noAthletesFound": "No athletes found.",
-    "wipPanel": "Coming soon: a panel to select an athlete and enter scores for the events."
+    "enterResults": "Enter Results",
+    "selectAthlete": "Select an athlete",
+    "fetchAthletesFailed": "Failed to load athletes.",
+    "selectAthleteError": "Please select an athlete.",
+    "scoreUpdated": "Result saved successfully!",
+    "scoreUpdateFailed": "Failed to save result.",
+    "time": "Time",
+    "timeFormat": "e.g., 12:45",
+    "saveResult": "Save Result"
   }
 }
