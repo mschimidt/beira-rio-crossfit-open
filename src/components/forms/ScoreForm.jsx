@@ -4,28 +4,14 @@ import { getAthletes, updateAthletePerformance } from '../../firebase/athleteSer
 import Input from './Input';
 import Button from './Button';
 
-const ScoreForm = () => {
+const ScoreForm = ({ athletes }) => {
   const { t } = useTranslation();
-  const [athletes, setAthletes] = useState([]);
   const [selectedAthlete, setSelectedAthlete] = useState('');
   const [score, setScore] = useState('');
   const [time, setTime] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  useEffect(() => {
-    const fetchAthletes = async () => {
-      try {
-        const athleteList = await getAthletes();
-        setAthletes(athleteList);
-      } catch (err) {
-        console.error("Failed to fetch athletes", err);
-        setError(t('fetchAthletesFailed'));
-      }
-    };
-    fetchAthletes();
-  }, [t]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -13,7 +13,7 @@ const CATEGORIES = [
   'Feminino Scale',
 ];
 
-const AthleteForm = () => {
+const AthleteForm = ({ onAthleteAdded }) => {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [box, setBox] = useState('');
@@ -31,6 +31,7 @@ const AthleteForm = () => {
     try {
       await addAthlete({ name, box, category });
       setSuccess(t('athleteAdded'));
+      onAthleteAdded(); // Notify parent to refresh
       // Reset form
       setName('');
       setBox('');
