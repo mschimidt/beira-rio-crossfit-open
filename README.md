@@ -108,7 +108,7 @@ O projeto está configurado para um deploy simplificado usando o pacote `gh-page
 2.  **Configure o `package.json`:** Abra o arquivo `package.json` e atualize o campo `homepage` com a URL do seu GitHub Pages.
 
     ```json
-    "homepage": "https://<SEU_USUARIO_GITHUB>.github.io/<NOME_DO_REPOSITORIO>",
+    "homepage": "https://mschimidt.github.io/beira-rio-crossfit-open",
     ```
 
 3.  **Execute o script de deploy:** Rode o comando abaixo para fazer o build da aplicação e enviá-la para a branch `gh-pages` do seu repositório.

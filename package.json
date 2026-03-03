@@ -2,7 +2,7 @@
   "name": "beira-rio-crossfit-open",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://<SEU_USUARIO_GITHUB>.github.io/<NOME_DO_REPOSITORIO>",
+  "homepage": "https://mschimidt.github.io/beira-rio-crossfit-open",
   "type": "module",
   "scripts": {
     "dev": "vite",
