@@ -19,7 +19,7 @@ const LeaderboardTable = ({ athletes, loading }) => {
             <th scope="col" className="px-4 py-3 text-center">{t('position')}</th>
             <th scope="col" className="px-4 py-3">{t('athlete')}</th>
             <th scope="col" className="px-4 py-3 hidden md:table-cell">{t('box')}</th>
-            <th scope="col" className="px-4 py-3 hidden md:table-cell">{t('time')}</th>
+            <th scope="col" className="px-4 py-3">{t('time')}</th>
             <th scope="col" className="px-4 py-3 text-right">{t('points')}</th>
           </tr>
         </thead>
@@ -29,7 +29,7 @@ const LeaderboardTable = ({ athletes, loading }) => {
               <td className="px-4 py-3 text-center font-bold">{athlete.position}</td>
               <td className="px-4 py-3 font-medium">{athlete.name}</td>
               <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.box}</td>
-              <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.time}</td>
+              <td className="px-4 py-3 text-gray-400">{athlete.time}</td>
               <td className="px-4 py-3 text-right font-mono text-neon-green">{athlete.score}</td>
             </tr>
           ))}
