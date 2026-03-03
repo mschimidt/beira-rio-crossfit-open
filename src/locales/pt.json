@@ -1,0 +1,28 @@
+{
+  "translation": {
+    "leaderboard": "Leaderboard",
+    "adminArea": "Área do Administrador",
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Senha",
+    "loginButton": "Entrar",
+    "loading": "Carregando...",
+    "loginFailed": "Falha ao fazer login. Verifique suas credenciais.",
+    "addAthlete": "Cadastrar Novo Atleta",
+    "fullName": "Nome Completo",
+    "boxName": "Nome do Box",
+    "category": "Categoria",
+    "selectCategory": "Selecione a categoria",
+    "saveAthlete": "Salvar Atleta",
+    "saving": "Salvando...",
+    "athleteAdded": "Atleta adicionado com sucesso!",
+    "addAthleteFailed": "Não foi possível adicionar o atleta.",
+    "position": "Pos",
+    "athlete": "Atleta",
+    "box": "Box",
+    "points": "Pontos",
+    "noAthletesFound": "Nenhum atleta encontrado.",
+    "wipPanel": "Em breve: um painel para selecionar o atleta e inserir a pontuação das provas."
+  }
+}

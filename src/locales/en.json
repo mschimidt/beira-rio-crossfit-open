@@ -1,0 +1,28 @@
+{
+  "translation": {
+    "leaderboard": "Leaderboard",
+    "adminArea": "Admin Area",
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Sign In",
+    "loading": "Loading...",
+    "loginFailed": "Failed to log in. Check your credentials.",
+    "addAthlete": "Register New Athlete",
+    "fullName": "Full Name",
+    "boxName": "Box Name",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "saveAthlete": "Save Athlete",
+    "saving": "Saving...",
+    "athleteAdded": "Athlete added successfully!",
+    "addAthleteFailed": "Failed to add athlete.",
+    "position": "Pos",
+    "athlete": "Athlete",
+    "box": "Box",
+    "points": "Points",
+    "noAthletesFound": "No athletes found.",
+    "wipPanel": "Coming soon: a panel to select an athlete and enter scores for the events."
+  }
+}
