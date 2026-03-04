@@ -65,7 +65,7 @@ const HomePage = () => {
     // 2. Calculate total score and sort
     const sortedAthletes = [...athletesByCategory]
       .map(athlete => {
-        const totalScore = Object.values(athlete.scores || {}).reduce((sum, score) => sum + score, 0);
+        const totalScore = Object.values(athlete.scores || {}).reduce((sum, score) => sum + (parseFloat(score) || 0), 0);
         return { ...athlete, totalScore };
       })
       .sort((a, b) => {
