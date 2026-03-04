@@ -17,7 +17,7 @@ const Root = () => {
         <header className="p-4 shadow-lg shadow-neon-green/10 relative">
           <div className="container mx-auto flex justify-center items-center">
             <h1 className="text-2xl font-bold text-neon-green text-center">
-              BEIRA RIO CROSSFIT OPEN
+              FITNESS BEIRA RIO OPEN 2026
             </h1>
             <div className="absolute top-1/2 right-4 -translate-y-1/2">
               <LanguageSwitcher />
