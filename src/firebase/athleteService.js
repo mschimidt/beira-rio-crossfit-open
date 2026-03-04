@@ -1,5 +1,5 @@
 import { db } from './config';
-import { collection, getDocs, query, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, query, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 // Mock data updated to the new structure
 const mockAthletes = [
@@ -89,3 +89,36 @@ export const updateAthletePerformance = async (athleteId, event, score) => {
     throw new Error("Não foi possível atualizar o resultado do atleta.");
   }
 };
+
+/**
+ * Deletes an athlete from the Firestore database.
+ * @param {string} athleteId - The ID of the athlete to delete.
+ * @returns {Promise} A promise that resolves when the athlete is deleted.
+ */
+export const deleteAthlete = async (athleteId) => {
+  if (db.app.options.apiKey === 'YOUR_API_KEY') {
+    console.warn('Firebase is not configured. Simulating delete athlete.');
+    console.log(`Deleting athlete ${athleteId}`);
+    return Promise.resolve();
+  }
+
+  try {
+    const athleteRef = doc(db, 'athletes', athleteId);
+    await deleteDoc(athleteRef);
+  } catch (error) {
+    console.error("Error deleting athlete: ", error);
+    throw new Error("Não foi possível deletar o atleta.");
+  }
+};
+
+/**
+ * Deletes a score for a specific event for a given athlete by setting it to 0.
+ * @param {string} athleteId - The ID of the athlete to update.
+ * @param {string} event - The name of the event (e.g., "26.1").
+ * @returns {Promise} A promise that resolves when the update is complete.
+ */
+export const deleteScore = async (athleteId, event) => {
+  // This just resets the score to 0, which is effectively deleting it for ranking purposes.
+  return updateAthletePerformance(athleteId, event, 0);
+};
+

@@ -33,6 +33,13 @@
     "event": "Prova",
     "overall": "Geral",
     "totalPoints": "Pontos Totais",
-    "score": "Pontuação"
+    "score": "Pontuação",
+    "confirmDeleteAthlete": "Tem certeza de que deseja excluir este atleta? Esta ação não pode ser desfeita.",
+    "deleteAthleteFailed": "Falha ao excluir o atleta.",
+    "confirmDeleteScore": "Tem certeza de que deseja excluir a pontuação da prova {{event}}? Isso irá redefini-la para 0.",
+    "deleteScoreFailed": "Falha ao excluir a pontuação.",
+    "athleteList": "Lista de Atletas",
+    "deleteAthlete": "Excluir Atleta",
+    "delete": "Excluir"
   }
 }

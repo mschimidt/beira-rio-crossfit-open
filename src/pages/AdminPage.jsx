@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getAthletes } from '../firebase/athleteService';
 import AthleteForm from '../components/forms/AthleteForm';
 import ScoreForm from '../components/forms/ScoreForm';
+import AthleteList from '../components/admin/AthleteList';
 
 const AdminPage = () => {
   const { t } = useTranslation();
@@ -15,6 +16,8 @@ const AdminPage = () => {
   const refreshAthletes = async () => {
     try {
       const athleteList = await getAthletes();
+      // Sort athletes alphabetically for consistent display
+      athleteList.sort((a, b) => a.name.localeCompare(b.name));
       setAthletes(athleteList);
     } catch (err) {
       console.error("Failed to fetch athletes", err);
@@ -49,13 +52,18 @@ const AdminPage = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <section>
+            <AthleteForm onAthleteAdded={refreshAthletes} />
+          </section>
+          <section>
+            <ScoreForm athletes={athletes} onScoreAdded={refreshAthletes} />
+          </section>
+        </div>
+        
         <section>
-          <AthleteForm onAthleteAdded={refreshAthletes} />
-        </section>
-
-        <section>
-          <ScoreForm athletes={athletes} onScoreAdded={refreshAthletes} />
+          <AthleteList athletes={athletes} onDataChanged={refreshAthletes} />
         </section>
       </div>
     </div>
