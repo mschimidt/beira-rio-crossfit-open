@@ -55,7 +55,7 @@ const AdminPage = () => {
         </section>
 
         <section>
-          <ScoreForm athletes={athletes} />
+          <ScoreForm athletes={athletes} onScoreAdded={refreshAthletes} />
         </section>
       </div>
     </div>

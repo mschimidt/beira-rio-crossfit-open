@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getAthletes, updateAthletePerformance } from '../../firebase/athleteService';
+import { updateAthletePerformance } from '../../firebase/athleteService';
 import Input from './Input';
 import Button from './Button';
 
-const ScoreForm = ({ athletes }) => {
+const PROVAS = ["26.1", "26.2", "26.3"];
+
+const ScoreForm = ({ athletes, onScoreAdded }) => {
   const { t } = useTranslation();
   const [selectedAthlete, setSelectedAthlete] = useState('');
+  const [prova, setProva] = useState(PROVAS[0]);
   const [score, setScore] = useState('');
-  const [time, setTime] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -25,13 +27,21 @@ const ScoreForm = ({ athletes }) => {
 
     setLoading(true);
     try {
-      await updateAthletePerformance(selectedAthlete, { score: Number(score), time });
+      // The score is sent as a float, and the event name is included.
+      await updateAthletePerformance(selectedAthlete, prova, parseFloat(score));
       setSuccess(t('scoreUpdated'));
+      
+      // Notify parent to refresh data
+      if (onScoreAdded) {
+        onScoreAdded();
+      }
+
       // Reset form
       setSelectedAthlete('');
       setScore('');
-      setTime('');
+      setProva(PROVAS[0]);
     } catch (err) {
+      console.error(err);
       setError(t('scoreUpdateFailed'));
     } finally {
       setLoading(false);
@@ -74,21 +84,37 @@ const ScoreForm = ({ athletes }) => {
           ))}
         </select>
       </div>
+      
+      <div>
+        <label
+          htmlFor="prova"
+          className="text-sm font-bold text-gray-400 block mb-1"
+        >
+          {t('event')}
+        </label>
+        <select
+          id="prova"
+          value={prova}
+          onChange={(e) => setProva(e.target.value)}
+          required
+          className="w-full p-2 text-gray-100 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-neon-green"
+        >
+          {PROVAS.map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <Input
         id="score"
         label={t('points')}
         type="number"
+        step="any" // Allow decimals
         value={score}
         onChange={(e) => setScore(e.target.value)}
         required
-      />
-      <Input
-        id="time"
-        label={t('time')}
-        placeholder={t('timeFormat')}
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
       />
       
       <div className="pt-2">

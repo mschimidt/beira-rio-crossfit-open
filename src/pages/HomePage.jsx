@@ -5,12 +5,42 @@ import CategoryFilters from "../components/leaderboard/CategoryFilters";
 import LeaderboardTable from "../components/leaderboard/LeaderboardTable";
 import { getAthletes } from "../firebase/athleteService";
 
+const PROVAS = ["Geral", "26.1", "26.2", "26.3"];
+
+// EventFilters Component defined within HomePage.jsx
+const EventFilters = ({ activeEvent, setActiveEvent }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-6">
+      <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+        {PROVAS.map((event) => (
+          <button
+            key={event}
+            onClick={() => setActiveEvent(event)}
+            className={`px-3 py-2 text-xs md:px-4 md:text-sm font-semibold rounded-full transition-all duration-200 transform
+              ${
+                activeEvent === event
+                  ? "bg-neon-green text-dark-blue shadow-lg shadow-neon-green/30 scale-105"
+                  : "bg-gray-700/50 hover:bg-gray-600/70 text-white"
+              }
+            `}
+          >
+            {event === "Geral" ? t('overall') : event}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
 const HomePage = () => {
   const { t } = useTranslation();
   const [allAthletes, setAllAthletes] = useState([]);
   const [filteredAthletes, setFilteredAthletes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("Geral");
+  const [activeEvent, setActiveEvent] = useState(PROVAS[0]); // "Geral"
 
   useEffect(() => {
     const fetchAthletes = async () => {
@@ -24,32 +54,51 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    const validAthletes = allAthletes.filter(
-      (athlete) =>
-        athlete.category !== "Masculino Intermediário" &&
-        athlete.category !== "Feminino Intermediário"
-    );
-
-    if (activeCategory === "Geral") {
-      setFilteredAthletes(validAthletes);
-    } else {
-      const filtered = validAthletes.filter(
+    // 1. Filter by category
+    let athletesByCategory = allAthletes;
+    if (activeCategory !== "Geral") {
+      athletesByCategory = allAthletes.filter(
         (athlete) => athlete.category === activeCategory
       );
-      setFilteredAthletes(filtered);
     }
-  }, [activeCategory, allAthletes]);
+
+    // 2. Calculate total score and sort
+    const sortedAthletes = [...athletesByCategory]
+      .map(athlete => {
+        const totalScore = Object.values(athlete.scores).reduce((sum, score) => sum + score, 0);
+        return { ...athlete, totalScore };
+      })
+      .sort((a, b) => {
+        if (activeEvent === "Geral") {
+          return b.totalScore - a.totalScore;
+        }
+        return (b.scores[activeEvent] || 0) - (a.scores[activeEvent] || 0);
+      });
+
+    setFilteredAthletes(sortedAthletes);
+    
+  }, [activeCategory, activeEvent, allAthletes]);
 
   return (
     <div className="container mx-auto">
       <h2 className="text-xl font-semibold mb-6 text-center text-white uppercase tracking-widest">
         {t('leaderboard')}
       </h2>
+      
+      <EventFilters 
+        activeEvent={activeEvent}
+        setActiveEvent={setActiveEvent}
+      />
       <CategoryFilters
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
       />
-      <LeaderboardTable athletes={filteredAthletes} loading={loading} />
+      
+      <LeaderboardTable 
+        athletes={filteredAthletes} 
+        loading={loading}
+        activeEvent={activeEvent} 
+      />
 
       <Link
         to="/login"

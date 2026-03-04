@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
-const LeaderboardTable = ({ athletes, loading }) => {
+const PROVAS = ["26.1", "26.2", "26.3"];
+
+const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
   const { t } = useTranslation();
 
   if (loading) {
@@ -11,29 +13,69 @@ const LeaderboardTable = ({ athletes, loading }) => {
     return <div className="text-center p-8 text-gray-400">{t('noAthletesFound')}</div>;
   }
 
+  const renderOverallHeader = () => (
+    <thead className="border-b border-neon-green/30 font-semibold text-neon-green">
+      <tr>
+        <th scope="col" className="px-4 py-3 text-center">{t('position')}</th>
+        <th scope="col" className="px-4 py-3">{t('athlete')}</th>
+        <th scope="col" className="px-4 py-3 hidden md:table-cell">{t('box')}</th>
+        <th scope="col" className="px-4 py-3 text-right">{t('totalPoints')}</th>
+        {PROVAS.map(prova => (
+          <th key={prova} scope="col" className="px-4 py-3 text-right hidden lg:table-cell">{prova}</th>
+        ))}
+      </tr>
+    </thead>
+  );
+
+  const renderOverallBody = () => (
+    <tbody>
+      {athletes.map((athlete, index) => (
+        <tr key={athlete.id} className="border-b border-gray-700/50 hover:bg-gray-700/20">
+          <td className="px-4 py-3 text-center font-bold">{index + 1}</td>
+          <td className="px-4 py-3 font-medium">{athlete.name}</td>
+          <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.box}</td>
+          <td className="px-4 py-3 text-right font-mono text-neon-green font-bold">{athlete.totalScore.toFixed(1)}</td>
+          {PROVAS.map(prova => (
+            <td key={prova} className="px-4 py-3 text-right font-mono text-gray-400 hidden lg:table-cell">
+              {athlete.scores[prova]?.toFixed(1) || '0.0'}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  );
+
+  const renderEventHeader = () => (
+    <thead className="border-b border-neon-green/30 font-semibold text-neon-green">
+      <tr>
+        <th scope="col" className="px-4 py-3 text-center">{t('position')}</th>
+        <th scope="col" className="px-4 py-3">{t('athlete')}</th>
+        <th scope="col" className="px-4 py-3 hidden md:table-cell">{t('box')}</th>
+        <th scope="col" className="px-4 py-3 text-right">{t('score')}</th>
+      </tr>
+    </thead>
+  );
+
+  const renderEventBody = () => (
+    <tbody>
+      {athletes.map((athlete, index) => (
+        <tr key={athlete.id} className="border-b border-gray-700/50 hover:bg-gray-700/20">
+          <td className="px-4 py-3 text-center font-bold">{index + 1}</td>
+          <td className="px-4 py-3 font-medium">{athlete.name}</td>
+          <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.box}</td>
+          <td className="px-4 py-3 text-right font-mono text-neon-green">
+            {(athlete.scores[activeEvent] || 0).toFixed(1)}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  );
+
   return (
     <div className="overflow-x-auto rounded-lg bg-gray-800/30">
       <table className="min-w-full text-left text-sm md:text-base">
-        <thead className="border-b border-neon-green/30 font-semibold text-neon-green">
-          <tr>
-            <th scope="col" className="px-4 py-3 text-center">{t('position')}</th>
-            <th scope="col" className="px-4 py-3">{t('athlete')}</th>
-            <th scope="col" className="px-4 py-3 hidden md:table-cell">{t('box')}</th>
-            <th scope="col" className="px-4 py-3">{t('time')}</th>
-            <th scope="col" className="px-4 py-3 text-right">{t('points')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {athletes.map((athlete) => (
-            <tr key={athlete.id} className="border-b border-gray-700/50 hover:bg-gray-700/20">
-              <td className="px-4 py-3 text-center font-bold">{athlete.position}</td>
-              <td className="px-4 py-3 font-medium">{athlete.name}</td>
-              <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.box}</td>
-              <td className="px-4 py-3 text-gray-400">{athlete.time}</td>
-              <td className="px-4 py-3 text-right font-mono text-neon-green">{athlete.score}</td>
-            </tr>
-          ))}
-        </tbody>
+        {activeEvent === 'Geral' ? renderOverallHeader() : renderEventHeader()}
+        {activeEvent === 'Geral' ? renderOverallBody() : renderEventBody()}
       </table>
     </div>
   );

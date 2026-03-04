@@ -15,6 +15,71 @@ Este projeto é uma Single Page Application (SPA) desenvolvida em React.js para 
 - **Área de Administração Protegida:** Permite o gerenciamento de atletas e (futuramente) o lançamento de pontuações.
 - **Suporte a Múltiplos Idiomas:** Interface em Português (BR) e Inglês.
 
+## Como o Sistema Funciona
+
+A aplicação foi estruturada para ser modular e escalável, seguindo as melhores práticas do ecossistema React.
+
+### Estrutura de Pastas
+
+-   **/src/components:** Contém componentes React reutilizáveis, como formulários, botões e tabelas.
+-   **/src/pages:** Contém os componentes de nível superior que representam as páginas da aplicação (HomePage, LoginPage, AdminPage).
+-   **/src/firebase:** Centraliza a configuração e os serviços do Firebase, como a comunicação com o Firestore (`athleteService.js`).
+-   **/src/contexts:** Armazena contextos React, como o `AuthContext`, para gerenciamento de estado global (ex: autenticação do usuário).
+-   **/src/locales:** Contém os arquivos de tradução (JSON) para o suporte a múltiplos idiomas.
+-   **/src/assets:** Armazena imagens e outros recursos estáticos.
+
+### Componentes Principais
+
+-   **App.jsx:** É o componente raiz que define a estrutura principal da página, incluindo o cabeçalho, o rodapé e o roteamento.
+-   **HomePage.jsx:** A página inicial que exibe o leaderboard público e os filtros de categoria.
+-   **AdminPage.jsx:** Uma página protegida onde os administradores podem adicionar novos atletas e (futuramente) registrar suas pontuações.
+-   **ProtectedRoute.jsx:** Um componente de ordem superior que verifica se o usuário está autenticado antes de renderizar uma página protegida.
+
+### Gerenciamento de Estado
+
+O estado da aplicação é gerenciado principalmente através dos Hooks do React:
+-   `useState`: Para gerenciar o estado local dos componentes (ex: dados de formulários, atletas filtrados).
+-   `useEffect`: Para lidar com efeitos colaterais, como o carregamento inicial de dados do Firebase.
+-   `useContext`: Para acessar o estado de autenticação global fornecido pelo `AuthContext`.
+
+### Roteamento
+
+A navegação é implementada com `react-router-dom`. O arquivo `App.jsx` define as rotas da aplicação, incluindo a rota `/admin` que é protegida pelo `ProtectedRoute`.
+
+### Integração com Firebase
+
+A comunicação com o backend é feita através do Firebase:
+-   **Firebase Authentication:** Usado para proteger a área administrativa, permitindo o login apenas de usuários autorizados.
+-   **Firestore:** Utilizado como banco de dados NoSQL para armazenar a lista de atletas e suas informações. O serviço `athleteService.js` abstrai as chamadas ao Firestore.
+
+### Internacionalização (i18n)
+
+O suporte a múltiplos idiomas é fornecido pela biblioteca `i18next`. Os textos da interface são armazenados em arquivos JSON na pasta `/src/locales`. O componente `LanguageSwitcher` permite que o usuário alterne entre os idiomas disponíveis.
+
+## Fluxo de Utilização
+
+Existem dois fluxos principais de interação com a aplicação, um para o público geral e outro para administradores.
+
+### 1. Usuário Visitante (Público)
+
+-   **Acesso à Página Inicial:** Ao acessar a URL da aplicação, o usuário visualiza o leaderboard completo com todos os atletas.
+-   **Filtro por Categoria:** O usuário pode clicar nos botões de categoria (ex: "Masculino RX", "Feminino Scale") para filtrar o ranking e ver apenas os atletas daquela categoria.
+-   **Mudança de Idioma:** No canto superior direito, o usuário pode alternar entre Português (PT) e Inglês (EN), e toda a interface será traduzida.
+
+### 2. Administrador
+
+-   **Acesso à Área de Login:** Na página inicial, o administrador clica no ícone de engrenagem (canto inferior direito) para ser redirecionado à página de login.
+-   **Autenticação:** O administrador insere seu e-mail e senha. As credenciais são validadas pelo Firebase Authentication.
+-   **Acesso à Página de Administração:** Após o login bem-sucedido, ele é redirecionado para a página `/admin`.
+-   **Gerenciamento de Atletas:** Na página de administração, o administrador pode:
+    -   Adicionar um novo atleta, preenchendo nome, box e categoria.
+    -   Visualizar a lista de atletas já cadastrados.
+-   **Inserção de Score:**
+    -   Seleciona o atleta
+    -   Informa o Score
+    -   Informa o Time
+-   **Logout:** Ao final da sessão, o administrador clica no botão "Logout" para sair da área protegida e retornar à página inicial.
+
 ---
 
 ## Guia de Instalação e Deploy

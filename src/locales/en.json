@@ -29,8 +29,10 @@
     "selectAthleteError": "Please select an athlete.",
     "scoreUpdated": "Result saved successfully!",
     "scoreUpdateFailed": "Failed to save result.",
-    "time": "Time",
-    "timeFormat": "e.g., 12:45",
-    "saveResult": "Save Result"
+    "saveResult": "Save Result",
+    "event": "Event",
+    "overall": "Overall",
+    "totalPoints": "Total Points",
+    "score": "Score"
   }
 }

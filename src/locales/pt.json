@@ -29,8 +29,10 @@
     "selectAthleteError": "Por favor, selecione um atleta.",
     "scoreUpdated": "Resultado salvo com sucesso!",
     "scoreUpdateFailed": "Falha ao salvar o resultado.",
-    "time": "Tempo",
-    "timeFormat": "ex: 12:45",
-    "saveResult": "Salvar Resultado"
+    "saveResult": "Salvar Resultado",
+    "event": "Prova",
+    "overall": "Geral",
+    "totalPoints": "Pontos Totais",
+    "score": "Pontuação"
   }
 }
