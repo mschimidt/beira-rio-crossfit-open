@@ -3,9 +3,9 @@ import { collection, getDocs, query, addDoc, doc, updateDoc, deleteDoc } from 'f
 
 // Mock data updated to the new structure
 const mockAthletes = [
-  { name: "João 'Trator' Silva", category: "Masculino RX", box: "Beira Rio CrossFit", scores: { "26.1": 194.1, "26.2": 0, "26.3": 0 } },
-  { name: "Maria 'Fênix' Costa", category: "Feminino RX", box: "CrossFit Caxias", scores: { "26.1": 190.5, "26.2": 0, "26.3": 0 } },
-  { name: "Pedro 'Animal' Souza", category: "Masculino RX", box: "Beira Rio CrossFit", scores: { "26.1": 188.0, "26.2": 0, "26.3": 0 } },
+  { name: "João 'Trator' Silva", category: "Masculino RX", box: "Beira Rio CrossFit", scores: { "26_1": 194.1, "26_2": 0, "26_3": 0 } },
+  { name: "Maria 'Fênix' Costa", category: "Feminino RX", box: "CrossFit Caxias", scores: { "26_1": 190.5, "26_2": 0, "26_3": 0 } },
+  { name: "Pedro 'Animal' Souza", category: "Masculino RX", box: "Beira Rio CrossFit", scores: { "26_1": 188.0, "26_2": 0, "26_3": 0 } },
 ];
 
 /**
@@ -52,9 +52,9 @@ export const addAthlete = async (athleteData) => {
     await addDoc(athletesCollection, {
       ...athleteData,
       scores: {
-        "26.1": 0,
-        "26.2": 0,
-        "26.3": 0,
+        "26_1": 0,
+        "26_2": 0,
+        "26_3": 0,
       },
     });
   } catch (error) {

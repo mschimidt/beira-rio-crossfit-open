@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-const PROVAS = ["26.1", "26.2", "26.3"];
+const PROVAS = ["26_1", "26_2", "26_3"];
 
 const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
         <th scope="col" className="px-4 py-3 hidden md:table-cell">{t('box')}</th>
         <th scope="col" className="px-4 py-3 text-right">{t('totalPoints')}</th>
         {PROVAS.map(prova => (
-          <th key={prova} scope="col" className="px-4 py-3 text-right hidden lg:table-cell">{prova}</th>
+          <th key={prova} scope="col" className="px-4 py-3 text-right hidden lg:table-cell">{prova.replace('_', '.')}</th>
         ))}
       </tr>
     </thead>

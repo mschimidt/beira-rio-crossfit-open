@@ -4,7 +4,7 @@ import { updateAthletePerformance } from '../../firebase/athleteService';
 import Input from './Input';
 import Button from './Button';
 
-const PROVAS = ["26.1", "26.2", "26.3"];
+const PROVAS = ["26_1", "26_2", "26_3"];
 
 const ScoreForm = ({ athletes, onScoreAdded }) => {
   const { t } = useTranslation();
@@ -101,7 +101,7 @@ const ScoreForm = ({ athletes, onScoreAdded }) => {
         >
           {PROVAS.map((p) => (
             <option key={p} value={p}>
-              {p}
+              {p.replace('_', '.')}
             </option>
           ))}
         </select>

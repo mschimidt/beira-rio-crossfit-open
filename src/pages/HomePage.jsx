@@ -5,7 +5,7 @@ import CategoryFilters from "../components/leaderboard/CategoryFilters";
 import LeaderboardTable from "../components/leaderboard/LeaderboardTable";
 import { getAthletes } from "../firebase/athleteService";
 
-const PROVAS = ["Geral", "26.1", "26.2", "26.3"];
+const PROVAS = ["Geral", "26_1", "26_2", "26_3"];
 
 // EventFilters Component defined within HomePage.jsx
 const EventFilters = ({ activeEvent, setActiveEvent }) => {
@@ -25,7 +25,7 @@ const EventFilters = ({ activeEvent, setActiveEvent }) => {
               }
             `}
           >
-            {event === "Geral" ? t('overall') : event}
+            {event === "Geral" ? t('overall') : event.replace('_', '.')}
           </button>
         ))}
       </div>
