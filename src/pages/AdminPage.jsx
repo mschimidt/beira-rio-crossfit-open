@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getAthletes } from '../firebase/athleteService';
 import AthleteForm from '../components/forms/AthleteForm';
 import ScoreForm from '../components/forms/ScoreForm';
-import AthleteList from '../components/admin/AthleteList';
+import AthleteList from '../components/forms/AthleteList';
 
 const AdminPage = () => {
   const { t } = useTranslation();
