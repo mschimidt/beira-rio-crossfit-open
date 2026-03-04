@@ -5,6 +5,7 @@ import AdminPage from "./pages/AdminPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import LanguageSwitcher from "./components/i18n/LanguageSwitcher";
 import logo from "./logo.png";
+import tituloBeirario from "./titulo beirario.png";
 
 const Root = () => {
   return (
@@ -14,14 +15,16 @@ const Root = () => {
         style={{ backgroundImage: `url(${logo})`, zIndex: 0 }}
       ></div>
       <div className="relative" style={{ zIndex: 1 }}>
-        <header className="p-4 shadow-lg shadow-neon-green/10 relative">
-          <div className="container mx-auto flex justify-center items-center">
-            <h1 className="text-2xl font-bold text-neon-green text-center">
-              FITNESS BEIRA RIO OPEN 2026
-            </h1>
-            <div className="absolute top-1/2 right-4 -translate-y-1/2">
-              <LanguageSwitcher />
+        <header className="p-4 shadow-lg shadow-neon-green/10">
+          <div className="container mx-auto flex justify-between items-center">
+            <div className="flex-grow flex justify-center">
+              <img
+                src={tituloBeirario}
+                alt="Fitness Beira Rio Open 2026"
+                className="h-12 md:h-16"
+              />
             </div>
+            <LanguageSwitcher />
           </div>
         </header>
         <main className="p-4 md:p-8">
