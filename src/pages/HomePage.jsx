@@ -41,7 +41,7 @@ const HomePage = () => {
   }, [activeCategory, allAthletes]);
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="container mx-auto">
       <h2 className="text-xl font-semibold mb-6 text-center text-white uppercase tracking-widest">
         {t('leaderboard')}
       </h2>

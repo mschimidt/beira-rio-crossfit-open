@@ -17,6 +17,7 @@ const Root = () => {
       <div className="relative" style={{ zIndex: 1 }}>
         <header className="p-4 shadow-lg shadow-neon-green/10">
           <div className="container mx-auto flex justify-between items-center">
+            <div className="flex-1"></div>
             <div className="flex-grow flex justify-center">
               <img
                 src={tituloBeirario}
@@ -24,7 +25,9 @@ const Root = () => {
                 className="h-12 md:h-16"
               />
             </div>
-            <LanguageSwitcher />
+            <div className="flex-1 flex justify-end">
+              <LanguageSwitcher />
+            </div>
           </div>
         </header>
         <main className="p-4 md:p-8">
