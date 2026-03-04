@@ -34,10 +34,10 @@ const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
           <td className="px-4 py-3 text-center font-bold">{index + 1}</td>
           <td className="px-4 py-3 font-medium">{athlete.name}</td>
           <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.box}</td>
-          <td className="px-4 py-3 text-right font-mono text-neon-green font-bold">{athlete.totalScore.toFixed(1)}</td>
+          <td className="px-4 py-3 text-right font-mono text-neon-green font-bold">{(athlete.totalScore || 0).toFixed(1)}</td>
           {PROVAS.map(prova => (
             <td key={prova} className="px-4 py-3 text-right font-mono text-gray-400 hidden lg:table-cell">
-              {athlete.scores[prova]?.toFixed(1) || '0.0'}
+              {(athlete.scores?.[prova] || 0).toFixed(1)}
             </td>
           ))}
         </tr>
@@ -64,7 +64,7 @@ const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
           <td className="px-4 py-3 font-medium">{athlete.name}</td>
           <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.box}</td>
           <td className="px-4 py-3 text-right font-mono text-neon-green">
-            {(athlete.scores[activeEvent] || 0).toFixed(1)}
+            {(athlete.scores?.[activeEvent] || 0).toFixed(1)}
           </td>
         </tr>
       ))}
