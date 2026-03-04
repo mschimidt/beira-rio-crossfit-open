@@ -7,8 +7,6 @@ import Button from './Button';
 const CATEGORIES = [
   'Masculino RX',
   'Feminino RX',
-  'Masculino Intermediário',
-  'Feminino Intermediário',
   'Masculino Scale',
   'Feminino Scale',
 ];

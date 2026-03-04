@@ -2,8 +2,6 @@ const CATEGORIES = [
   "Geral",
   "Masculino RX",
   "Feminino RX",
-  "Masculino Intermediário",
-  "Feminino Intermediário",
   "Masculino Scale",
   "Feminino Scale",
 ];

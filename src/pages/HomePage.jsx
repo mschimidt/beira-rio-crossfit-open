@@ -24,10 +24,16 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
+    const validAthletes = allAthletes.filter(
+      (athlete) =>
+        athlete.category !== "Masculino Intermediário" &&
+        athlete.category !== "Feminino Intermediário"
+    );
+
     if (activeCategory === "Geral") {
-      setFilteredAthletes(allAthletes);
+      setFilteredAthletes(validAthletes);
     } else {
-      const filtered = allAthletes.filter(
+      const filtered = validAthletes.filter(
         (athlete) => athlete.category === activeCategory
       );
       setFilteredAthletes(filtered);
