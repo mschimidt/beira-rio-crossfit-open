@@ -65,14 +65,14 @@ const HomePage = () => {
     // 2. Calculate total score and sort
     const sortedAthletes = [...athletesByCategory]
       .map(athlete => {
-        const totalScore = Object.values(athlete.scores).reduce((sum, score) => sum + score, 0);
+        const totalScore = Object.values(athlete.scores || {}).reduce((sum, score) => sum + score, 0);
         return { ...athlete, totalScore };
       })
       .sort((a, b) => {
         if (activeEvent === "Geral") {
           return b.totalScore - a.totalScore;
         }
-        return (b.scores[activeEvent] || 0) - (a.scores[activeEvent] || 0);
+        return (b.scores?.[activeEvent] || 0) - (a.scores?.[activeEvent] || 0);
       });
 
     setFilteredAthletes(sortedAthletes);
