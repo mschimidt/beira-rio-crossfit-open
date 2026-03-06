@@ -34,12 +34,19 @@
     "overall": "Overall",
     "totalPoints": "Total Points",
     "score": "Score",
+    "reps": "reps",
     "confirmDeleteAthlete": "Are you sure you want to delete this athlete? This action cannot be undone.",
     "deleteAthleteFailed": "Failed to delete athlete.",
     "confirmDeleteScore": "Are you sure you want to delete the score for event {{event}}? This will reset it to 0.",
     "deleteScoreFailed": "Failed to delete score.",
     "athleteList": "Athlete List",
     "deleteAthlete": "Delete Athlete",
-    "delete": "Delete"
+    "delete": "Delete",
+    "athleteFinishedEvent": "Did the athlete finish the event?",
+    "resultRepsTiebreak": "Result (Reps/Tie-break)",
+    "time": "Time (MM:SS)",
+    "invalidTimeFormat": "Invalid time format. Use MM:SS.",
+    "invalidTimeSeconds": "Seconds cannot be 60 or more.",
+    "invalidReps": "Invalid reps value."
   }
 }

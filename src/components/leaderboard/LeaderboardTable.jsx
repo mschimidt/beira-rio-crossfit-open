@@ -2,6 +2,35 @@ import { useTranslation } from 'react-i18next';
 
 const PROVAS = ["26_1", "26_2", "26_3"];
 
+/**
+ * Formats the score for display based on its structure.
+ * @param {object | number} score - The score object or legacy number.
+ * @param {function} t - The translation function.
+ * @returns {string} The formatted score string.
+ */
+const formatScore = (score, t) => {
+  // Check for missing scores or scores that are explicitly zero
+  const scoreValue = typeof score === 'number' ? score : score?.value;
+  if (scoreValue === undefined || scoreValue === null || Number(scoreValue) === 0) {
+    return 'N/A';
+  }
+
+  // Legacy support for old numeric scores
+  if (typeof score === 'number') {
+    return (Number(score) || 0).toFixed(1);
+  }
+
+  // New score object format
+  if (score.isCapped) {
+    return `${(Number(score.value) || 0).toFixed(1)} ${t('reps')}`;
+  } else {
+    const totalSeconds = Number(score.value) || 0;
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+};
+
 const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
   const { t } = useTranslation();
 
@@ -21,7 +50,7 @@ const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
         <th scope="col" className="px-4 py-3 hidden md:table-cell">{t('box')}</th>
         <th scope="col" className="px-4 py-3 text-right">{t('totalPoints')}</th>
         {PROVAS.map(prova => (
-          <th key={prova} scope="col" className="px-4 py-3 text-right hidden lg:table-cell">{prova.replace('_', '.')}</th>
+          <th key={prova} scope="col" className="px-4 py-3 text-center hidden lg:table-cell">{prova.replace('_', '.')}</th>
         ))}
       </tr>
     </thead>
@@ -34,10 +63,12 @@ const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
           <td className="px-4 py-3 text-center font-bold">{index + 1}</td>
           <td className="px-4 py-3 font-medium">{athlete.name}</td>
           <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.box}</td>
-          <td className="px-4 py-3 text-right font-mono text-neon-green font-bold">{(parseFloat(athlete.totalScore) || 0).toFixed(1)}</td>
+          <td className="px-4 py-3 text-right font-mono text-neon-green font-bold">
+            {Number(athlete.totalPoints) || 0}
+          </td>
           {PROVAS.map(prova => (
-            <td key={prova} className="px-4 py-3 text-right font-mono text-gray-400 hidden lg:table-cell">
-              {(athlete.scores?.[prova] || 0).toFixed(1)}
+            <td key={prova} className="px-4 py-3 text-center font-mono text-gray-400 hidden lg:table-cell">
+              {`(${athlete.individualRanks?.[prova] || 'N/A'})`}
             </td>
           ))}
         </tr>
@@ -58,13 +89,13 @@ const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
 
   const renderEventBody = () => (
     <tbody>
-      {athletes.map((athlete, index) => (
+      {athletes.map((athlete) => (
         <tr key={athlete.id} className="border-b border-gray-700/50 hover:bg-gray-700/20">
-          <td className="px-4 py-3 text-center font-bold">{index + 1}</td>
+          <td className="px-4 py-3 text-center font-bold">{athlete.rank || 'N/A'}</td>
           <td className="px-4 py-3 font-medium">{athlete.name}</td>
           <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{athlete.box}</td>
           <td className="px-4 py-3 text-right font-mono text-neon-green">
-            {(athlete.scores?.[activeEvent] || 0).toFixed(1)}
+            {formatScore(athlete.scores?.[activeEvent], t)}
           </td>
         </tr>
       ))}

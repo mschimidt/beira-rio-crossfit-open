@@ -4,8 +4,10 @@ import { useTranslation } from "react-i18next";
 import CategoryFilters from "../components/leaderboard/CategoryFilters";
 import LeaderboardTable from "../components/leaderboard/LeaderboardTable";
 import { getAthletes } from "../firebase/athleteService";
+import { calculateWorkoutRanks, calculateOverallRanking } from "../lib/ranking";
 
 const PROVAS = ["Geral", "26_1", "26_2", "26_3"];
+const EVENT_IDS = ["26_1", "26_2", "26_3"];
 
 // EventFilters Component defined within HomePage.jsx
 const EventFilters = ({ activeEvent, setActiveEvent }) => {
@@ -54,7 +56,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    // 1. Filter by category
+    // 1. Filter by category first
     let athletesByCategory = allAthletes;
     if (activeCategory !== "Geral") {
       athletesByCategory = allAthletes.filter(
@@ -62,20 +64,15 @@ const HomePage = () => {
       );
     }
 
-    // 2. Calculate total score and sort
-    const sortedAthletes = [...athletesByCategory]
-      .map(athlete => {
-        const totalScore = Object.values(athlete.scores || {}).reduce((sum, score) => sum + (parseFloat(score) || 0), 0);
-        return { ...athlete, totalScore };
-      })
-      .sort((a, b) => {
-        if (activeEvent === "Geral") {
-          return b.totalScore - a.totalScore;
-        }
-        return (b.scores?.[activeEvent] || 0) - (a.scores?.[activeEvent] || 0);
-      });
-
-    setFilteredAthletes(sortedAthletes);
+    // 2. Calculate ranks and sort based on the active event
+    let sortedAndRankedAthletes;
+    if (activeEvent === "Geral") {
+      sortedAndRankedAthletes = calculateOverallRanking(athletesByCategory, EVENT_IDS);
+    } else {
+      sortedAndRankedAthletes = calculateWorkoutRanks(athletesByCategory, activeEvent);
+    }
+    
+    setFilteredAthletes(sortedAndRankedAthletes);
     
   }, [activeCategory, activeEvent, allAthletes]);
 

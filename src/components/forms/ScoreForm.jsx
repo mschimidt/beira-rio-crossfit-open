@@ -1,19 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateAthletePerformance } from '../../firebase/athleteService';
 import Input from './Input';
 import Button from './Button';
 
 const PROVAS = ["26_1", "26_2", "26_3"];
+const TIME_BASED_PROVAS = ["26_2", "26_3"]; // Provas que podem ter tempo
 
 const ScoreForm = ({ athletes, onScoreAdded }) => {
   const { t } = useTranslation();
   const [selectedAthlete, setSelectedAthlete] = useState('');
   const [prova, setProva] = useState(PROVAS[0]);
-  const [score, setScore] = useState('');
+  
+  // States for score inputs
+  const [repsValue, setRepsValue] = useState('');
+  const [timeValue, setTimeValue] = useState('');
+  
+  // State for workout type
+  const [isCapped, setIsCapped] = useState(true); // true = reps, false = time
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Reset form state when prova changes
+  useEffect(() => {
+    setRepsValue('');
+    setTimeValue('');
+    setError('');
+    // Prova 26.1 is always reps (capped)
+    if (prova === '26_1') {
+      setIsCapped(true);
+    }
+  }, [prova]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,21 +44,56 @@ const ScoreForm = ({ athletes, onScoreAdded }) => {
       return;
     }
 
+    let scorePayload;
+
+    if (!isCapped) {
+      // Time-based score
+      const timeParts = timeValue.match(/^(\d{1,2}):(\d{2})$/);
+      if (!timeParts) {
+        setError(t('invalidTimeFormat'));
+        return;
+      }
+      const minutes = parseInt(timeParts[1], 10);
+      const seconds = parseInt(timeParts[2], 10);
+      
+      if (seconds >= 60) {
+        setError(t('invalidTimeSeconds'));
+        return;
+      }
+
+      scorePayload = {
+        isCapped: false,
+        value: minutes * 60 + seconds,
+      };
+
+    } else {
+      // Reps-based score
+      if (!repsValue || parseFloat(repsValue) < 0) {
+        setError(t('invalidReps'));
+        return;
+      }
+      scorePayload = {
+        isCapped: true,
+        value: parseFloat(repsValue),
+      };
+    }
+
     setLoading(true);
     try {
-      // The score is sent as a float, and the event name is included.
-      await updateAthletePerformance(selectedAthlete, prova, parseFloat(score));
+      await updateAthletePerformance(selectedAthlete, prova, scorePayload);
       setSuccess(t('scoreUpdated'));
       
-      // Notify parent to refresh data
       if (onScoreAdded) {
         onScoreAdded();
       }
 
       // Reset form
       setSelectedAthlete('');
-      setScore('');
       setProva(PROVAS[0]);
+      setRepsValue('');
+      setTimeValue('');
+      setIsCapped(true);
+
     } catch (err) {
       console.error(err);
       setError(t('scoreUpdateFailed'));
@@ -47,6 +101,8 @@ const ScoreForm = ({ athletes, onScoreAdded }) => {
       setLoading(false);
     }
   };
+  
+  const canBeTimeBased = TIME_BASED_PROVAS.includes(prova);
 
   return (
     <form
@@ -107,15 +163,43 @@ const ScoreForm = ({ athletes, onScoreAdded }) => {
         </select>
       </div>
 
-      <Input
-        id="score"
-        label={t('points')}
-        type="number"
-        step="any" // Allow decimals
-        value={score}
-        onChange={(e) => setScore(e.target.value)}
-        required
-      />
+      {canBeTimeBased && (
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="isCappedToggle"
+            checked={!isCapped}
+            onChange={() => setIsCapped(!isCapped)}
+            className="w-4 h-4 rounded bg-gray-700 border-gray-600 text-neon-green focus:ring-neon-green"
+          />
+          <label htmlFor="isCappedToggle" className="text-sm text-gray-300">
+            {t('athleteFinishedEvent')}
+          </label>
+        </div>
+      )}
+
+      {isCapped ? (
+        <Input
+          id="reps"
+          label={t('resultRepsTiebreak')}
+          type="number"
+          step="any"
+          value={repsValue}
+          onChange={(e) => setRepsValue(e.target.value)}
+          placeholder="Ex: 150.5"
+          required
+        />
+      ) : (
+        <Input
+          id="time"
+          label={t('time')}
+          type="text"
+          value={timeValue}
+          onChange={(e) => setTimeValue(e.target.value)}
+          placeholder="MM:SS"
+          required
+        />
+      )}
       
       <div className="pt-2">
         <Button type="submit" disabled={loading}>
