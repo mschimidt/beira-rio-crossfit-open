@@ -57,16 +57,29 @@ const assignRanks = (sortedAthletes, eventId) => {
 export const calculateWorkoutRanks = (athletes, eventId) => {
   // Create a deep copy to avoid mutations
   const athletesCopy = JSON.parse(JSON.stringify(athletes));
-
-  // Filter out athletes who have no score for this event
-  const participants = athletesCopy.filter(a => a.scores?.[eventId] !== undefined && getScoreValue(a.scores[eventId]) > 0);
   
-  let sortedParticipants;
+  let sortedAthletes;
 
   if (TIME_BASED_EVENTS.includes(eventId)) {
-    // Separate athletes who finished from those who were capped
-    const finished = participants.filter(a => !a.scores[eventId].isCapped);
-    const capped = participants.filter(a => a.scores[eventId].isCapped);
+    // Separate athletes into three groups: finished, capped, and non-participants
+    const finished = [];
+    const capped = [];
+    const didNotParticipate = [];
+
+    athletesCopy.forEach(a => {
+      const score = a.scores?.[eventId];
+      const value = getScoreValue(score);
+
+      if (value > 0) {
+        if (score.isCapped) {
+          capped.push(a);
+        } else {
+          finished.push(a);
+        }
+      } else {
+        didNotParticipate.push(a);
+      }
+    });
 
     // Sort finished athletes by time ASC (lower is better)
     finished.sort((a, b) => getScoreValue(a.scores[eventId]) - getScoreValue(b.scores[eventId]));
@@ -74,21 +87,20 @@ export const calculateWorkoutRanks = (athletes, eventId) => {
     // Sort capped athletes by reps DESC (higher is better)
     capped.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId]));
     
-    // Finished athletes always rank higher than capped ones
-    sortedParticipants = [...finished, ...capped];
+    // Finished athletes rank higher than capped, who rank higher than non-participants
+    sortedAthletes = [...finished, ...capped, ...didNotParticipate];
   } else {
-    // For reps-based events (like 26_1), sort by score DESC (higher is better)
-    sortedParticipants = participants.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId]));
+    // For reps-based events (like 26_1), sort all by score DESC (higher is better)
+    // Athletes with a score of 0 will automatically be placed at the end.
+    sortedAthletes = athletesCopy.sort((a, b) => {
+      const scoreA = getScoreValue(a.scores?.[eventId]);
+      const scoreB = getScoreValue(b.scores?.[eventId]);
+      return scoreB - scoreA;
+    });
   }
   
-  // Assign ranks based on the sorted list
-  const rankedAthletes = assignRanks(sortedParticipants, eventId);
-
-  // Add back non-participants
-  const nonParticipants = athletesCopy.filter(a => !participants.some(p => p.id === a.id));
-  nonParticipants.forEach(a => a.rank = participants.length + 1); // Give them the last rank
-
-  return [...rankedAthletes, ...nonParticipants];
+  // Assign ranks based on the fully sorted list
+  return assignRanks(sortedAthletes, eventId);
 };
 
 
