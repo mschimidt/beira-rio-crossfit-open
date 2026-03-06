@@ -47,6 +47,10 @@
     "time": "Tempo (MM:SS)",
     "invalidTimeFormat": "Formato de tempo inválido. Use MM:SS.",
     "invalidTimeSeconds": "Os segundos não podem ser 60 ou mais.",
-    "invalidReps": "Valor de repetições inválido."
+    "invalidReps": "Valor de repetições inválido.",
+    "editScoreFor": "Editar Score para",
+    "cancel": "Cancelar",
+    "saveChanges": "Salvar Alterações",
+    "edit": "Editar"
   }
 }

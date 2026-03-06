@@ -1,19 +1,6 @@
-const TIME_BASED_EVENTS = ["26_2", "26_3"];
+import { getScoreValue } from "./utils";
 
-/**
- * Gets the raw numeric score, supporting both the old and new data structures.
- * @param {object | number} score - The score object or number.
- * @returns {number} The numeric value of the score.
- */
-const getScoreValue = (score) => {
-  if (typeof score === 'number') {
-    return score; // Legacy support
-  }
-  if (score && typeof score.value === 'number') {
-    return score.value;
-  }
-  return 0; // Default for missing or invalid scores
-};
+const TIME_BASED_EVENTS = ["26_2", "26_3"];
 
 /**
  * Calculates the ranks for a single event, handling ties correctly.

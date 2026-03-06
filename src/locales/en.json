@@ -47,6 +47,10 @@
     "time": "Time (MM:SS)",
     "invalidTimeFormat": "Invalid time format. Use MM:SS.",
     "invalidTimeSeconds": "Seconds cannot be 60 or more.",
-    "invalidReps": "Invalid reps value."
+    "invalidReps": "Invalid reps value.",
+    "editScoreFor": "Edit Score for",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "edit": "Edit"
   }
 }

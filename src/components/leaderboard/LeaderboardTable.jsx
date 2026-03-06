@@ -1,35 +1,5 @@
 import { useTranslation } from 'react-i18next';
-
-const PROVAS = ["26_1", "26_2", "26_3"];
-
-/**
- * Formats the score for display based on its structure.
- * @param {object | number} score - The score object or legacy number.
- * @param {function} t - The translation function.
- * @returns {string} The formatted score string.
- */
-const formatScore = (score, t) => {
-  // Check for missing scores or scores that are explicitly zero
-  const scoreValue = typeof score === 'number' ? score : score?.value;
-  if (scoreValue === undefined || scoreValue === null || Number(scoreValue) === 0) {
-    return 'N/A';
-  }
-
-  // Legacy support for old numeric scores
-  if (typeof score === 'number') {
-    return (Number(score) || 0).toFixed(1);
-  }
-
-  // New score object format
-  if (score.isCapped) {
-    return `${(Number(score.value) || 0).toFixed(1)} ${t('reps')}`;
-  } else {
-    const totalSeconds = Number(score.value) || 0;
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  }
-};
+import { formatScore } from '../../lib/utils';
 
 const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
   const { t } = useTranslation();

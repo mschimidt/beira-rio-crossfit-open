@@ -64,15 +64,26 @@ const HomePage = () => {
       );
     }
 
-    // 2. Calculate ranks and sort based on the active event
-    let sortedAndRankedAthletes;
     if (activeEvent === "Geral") {
-      sortedAndRankedAthletes = calculateOverallRanking(athletesByCategory, EVENT_IDS);
+      // For the Overall view, we get the fully calculated overall ranking
+      const overallRankedAthletes = calculateOverallRanking(athletesByCategory, EVENT_IDS);
+      setFilteredAthletes(overallRankedAthletes);
     } else {
-      sortedAndRankedAthletes = calculateWorkoutRanks(athletesByCategory, activeEvent);
+      // For a specific event view, we show all athletes, with non-participants at the end.
+      // a. Get the list of ranked participants from the pure ranking function
+      const rankedParticipants = calculateWorkoutRanks(athletesByCategory, activeEvent);
+
+      // b. Find the non-participants by comparing with the original category list
+      const participantIds = new Set(rankedParticipants.map(p => p.id));
+      const nonParticipants = athletesByCategory
+        .filter(a => !participantIds.has(a.id))
+        .map(a => ({ ...a, rank: 'N/A' })); // Assign a display-friendly rank
+
+      // c. Combine and sort. Participants first, then non-participants.
+      const combinedList = [...rankedParticipants, ...nonParticipants];
+      
+      setFilteredAthletes(combinedList);
     }
-    
-    setFilteredAthletes(sortedAndRankedAthletes);
     
   }, [activeCategory, activeEvent, allAthletes]);
 
