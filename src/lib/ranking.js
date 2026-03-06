@@ -49,51 +49,39 @@ const assignRanks = (sortedAthletes, eventId) => {
 };
 
 /**
- * Calculates and assigns ranks to athletes for a specific workout (event).
+ * Calculates and assigns ranks ONLY to athletes who participated in a specific workout.
  * @param {Array<Object>} athletes - The list of all athletes.
  * @param {string} eventId - The identifier for the event (e.g., "26_2").
- * @returns {Array<Object>} A new array of athletes, sorted and ranked for the given event.
+ * @returns {Array<Object>} A new array containing ONLY the ranked participants.
  */
 export const calculateWorkoutRanks = (athletes, eventId) => {
   // Create a deep copy to avoid mutations
   const athletesCopy = JSON.parse(JSON.stringify(athletes));
 
-  // Separate athletes who participated from those who did not
+  // 1. Get only the athletes who participated in this event.
   const participants = athletesCopy.filter(a => a.scores?.[eventId] !== undefined && getScoreValue(a.scores[eventId]) > 0);
-  const nonParticipants = athletesCopy.filter(a => !participants.some(p => p.id === a.id));
 
-  // FIX: If no one participated, assign a penalty rank and return early.
-  // The penalty is a rank equal to the total number of athletes in the current context + 1.
+  // If no one participated, return an empty list.
   if (participants.length === 0) {
-    athletesCopy.forEach(a => a.rank = athletesCopy.length + 1);
-    return athletesCopy;
+    return [];
   }
   
-  // --- The rest is the original logic for ranking actual participants ---
+  // 2. Sort the participants based on the event type.
   let sortedParticipants;
-
-  // Sort participants based on the event type
   if (TIME_BASED_EVENTS.includes(eventId)) {
     const finished = participants.filter(a => !a.scores[eventId].isCapped);
     const capped = participants.filter(a => a.scores[eventId].isCapped);
 
-    finished.sort((a, b) => getScoreValue(a.scores[eventId]) - getScoreValue(b.scores[eventId]));
-    capped.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId]));
+    finished.sort((a, b) => getScoreValue(a.scores[eventId]) - getScoreValue(b.scores[eventId])); // Lower time is better
+    capped.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId])); // Higher reps are better
     
     sortedParticipants = [...finished, ...capped];
   } else {
-    sortedParticipants = participants.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId]));
+    sortedParticipants = participants.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId])); // Higher score is better
   }
   
-  // Assign ranks to the sorted participants
-  const rankedParticipants = assignRanks(sortedParticipants, eventId);
-
-  // Assign the correct last-place rank to non-participants
-  const rankForNonParticipants = participants.length + 1;
-  nonParticipants.forEach(a => a.rank = rankForNonParticipants);
-
-  // Return the full list of ranked athletes
-  return [...rankedParticipants, ...nonParticipants].sort((a,b) => a.rank - b.rank);
+  // 3. Assign ranks ONLY to the participants.
+  return assignRanks(sortedParticipants, eventId);
 };
 
 
@@ -111,7 +99,7 @@ export const calculateOverallRanking = (athletes, eventIds) => {
   // A map to hold the calculated ranks for each event to avoid re-calculating
   const eventRanksCache = new Map();
 
-  // First, calculate the rank for each athlete in each event and store it
+  // First, calculate the rank for each participating athlete in each event and store it
   eventIds.forEach(eventId => {
     const rankedAthletesForEvent = calculateWorkoutRanks(athletes, eventId);
     eventRanksCache.set(eventId, new Map(rankedAthletesForEvent.map(a => [a.id, a.rank])));
@@ -123,14 +111,26 @@ export const calculateOverallRanking = (athletes, eventIds) => {
     athlete.individualRanks = {};
 
     eventIds.forEach(eventId => {
-      const rankForEvent = eventRanksCache.get(eventId)?.get(athlete.id) || athletes.length; // Default to last place if no rank
+      // If the athlete has a rank for the event, use it. Otherwise, the rank is 0.
+      const rankForEvent = eventRanksCache.get(eventId)?.get(athlete.id) || 0;
+      
       athlete.individualRanks[eventId] = rankForEvent;
-      athlete.totalPoints += rankForEvent;
+
+      // Only add points if the athlete actually participated (rank > 0)
+      if (rankForEvent > 0) {
+        athlete.totalPoints += rankForEvent;
+      }
     });
   });
 
   // Sort athletes by total points ASC (fewer points is better)
-  athletesWithOverallPoints.sort((a, b) => a.totalPoints - b.totalPoints);
+  athletesWithOverallPoints.sort((a, b) => {
+    // Athletes with 0 total points (no events done) should be at the end.
+    if (a.totalPoints === 0 && b.totalPoints > 0) return 1;
+    if (b.totalPoints === 0 && a.totalPoints > 0) return -1;
+    // For athletes who have participated, fewer points is better.
+    return a.totalPoints - b.totalPoints;
+  });
 
   return athletesWithOverallPoints;
 };

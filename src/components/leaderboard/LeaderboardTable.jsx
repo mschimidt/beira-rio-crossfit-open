@@ -68,7 +68,7 @@ const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
           </td>
           {PROVAS.map(prova => (
             <td key={prova} className="px-4 py-3 text-center font-mono text-gray-400 hidden lg:table-cell">
-              {`(${athlete.individualRanks?.[prova] || 'N/A'})`}
+              {`(${athlete.individualRanks?.[prova] > 0 ? athlete.individualRanks[prova] : 'N/A'})`}
             </td>
           ))}
         </tr>
