@@ -57,50 +57,43 @@ const assignRanks = (sortedAthletes, eventId) => {
 export const calculateWorkoutRanks = (athletes, eventId) => {
   // Create a deep copy to avoid mutations
   const athletesCopy = JSON.parse(JSON.stringify(athletes));
-  
-  let sortedAthletes;
 
-  if (TIME_BASED_EVENTS.includes(eventId)) {
-    // Separate athletes into three groups: finished, capped, and non-participants
-    const finished = [];
-    const capped = [];
-    const didNotParticipate = [];
+  // Separate athletes who participated from those who did not
+  const participants = athletesCopy.filter(a => a.scores?.[eventId] !== undefined && getScoreValue(a.scores[eventId]) > 0);
+  const nonParticipants = athletesCopy.filter(a => !participants.some(p => p.id === a.id));
 
-    athletesCopy.forEach(a => {
-      const score = a.scores?.[eventId];
-      const value = getScoreValue(score);
-
-      if (value > 0) {
-        if (score.isCapped) {
-          capped.push(a);
-        } else {
-          finished.push(a);
-        }
-      } else {
-        didNotParticipate.push(a);
-      }
-    });
-
-    // Sort finished athletes by time ASC (lower is better)
-    finished.sort((a, b) => getScoreValue(a.scores[eventId]) - getScoreValue(b.scores[eventId]));
-
-    // Sort capped athletes by reps DESC (higher is better)
-    capped.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId]));
-    
-    // Finished athletes rank higher than capped, who rank higher than non-participants
-    sortedAthletes = [...finished, ...capped, ...didNotParticipate];
-  } else {
-    // For reps-based events (like 26_1), sort all by score DESC (higher is better)
-    // Athletes with a score of 0 will automatically be placed at the end.
-    sortedAthletes = athletesCopy.sort((a, b) => {
-      const scoreA = getScoreValue(a.scores?.[eventId]);
-      const scoreB = getScoreValue(b.scores?.[eventId]);
-      return scoreB - scoreA;
-    });
+  // FIX: If no one participated, assign a penalty rank and return early.
+  // The penalty is a rank equal to the total number of athletes in the current context + 1.
+  if (participants.length === 0) {
+    athletesCopy.forEach(a => a.rank = athletesCopy.length + 1);
+    return athletesCopy;
   }
   
-  // Assign ranks based on the fully sorted list
-  return assignRanks(sortedAthletes, eventId);
+  // --- The rest is the original logic for ranking actual participants ---
+  let sortedParticipants;
+
+  // Sort participants based on the event type
+  if (TIME_BASED_EVENTS.includes(eventId)) {
+    const finished = participants.filter(a => !a.scores[eventId].isCapped);
+    const capped = participants.filter(a => a.scores[eventId].isCapped);
+
+    finished.sort((a, b) => getScoreValue(a.scores[eventId]) - getScoreValue(b.scores[eventId]));
+    capped.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId]));
+    
+    sortedParticipants = [...finished, ...capped];
+  } else {
+    sortedParticipants = participants.sort((a, b) => getScoreValue(b.scores[eventId]) - getScoreValue(a.scores[eventId]));
+  }
+  
+  // Assign ranks to the sorted participants
+  const rankedParticipants = assignRanks(sortedParticipants, eventId);
+
+  // Assign the correct last-place rank to non-participants
+  const rankForNonParticipants = participants.length + 1;
+  nonParticipants.forEach(a => a.rank = rankForNonParticipants);
+
+  // Return the full list of ranked athletes
+  return [...rankedParticipants, ...nonParticipants].sort((a,b) => a.rank - b.rank);
 };
 
 
