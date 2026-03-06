@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { formatScore } from '../../lib/utils';
 
+const PROVAS = ["26_1", "26_2", "26_3"];
+
 const LeaderboardTable = ({ athletes, loading, activeEvent }) => {
   const { t } = useTranslation();
 
