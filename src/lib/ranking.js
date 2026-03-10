@@ -114,11 +114,17 @@ export const calculateOverallRanking = (athletes, eventIds) => {
 
   // First, calculate the rank for each athlete in each event and store it
   eventIds.forEach((eventId) => {
-    const rankedAthletesForEvent = calculateWorkoutRanks(athletes, eventId);
-    eventRanksCache.set(
-      eventId,
-      new Map(rankedAthletesForEvent.map((a) => [a.id, a.rank]))
+    const eventHasScores = athletes.some(
+      (a) => a.scores?.[eventId] !== undefined && getScoreValue(a.scores[eventId]) > 0
     );
+
+    if (eventHasScores) {
+      const rankedAthletesForEvent = calculateWorkoutRanks(athletes, eventId);
+      eventRanksCache.set(
+        eventId,
+        new Map(rankedAthletesForEvent.map((a) => [a.id, a.rank]))
+      );
+    }
   });
 
   // Now, calculate total points and individual ranks for each athlete
@@ -127,7 +133,7 @@ export const calculateOverallRanking = (athletes, eventIds) => {
     athlete.individualRanks = {};
 
     eventIds.forEach((eventId) => {
-      // Every athlete will have a rank.
+      // Every athlete will have a rank. If the event is not in the cache, it means it had no scores, so rank is 0.
       const rankForEvent = eventRanksCache.get(eventId)?.get(athlete.id) || 0;
 
       athlete.individualRanks[eventId] = rankForEvent;
